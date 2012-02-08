@@ -1,6 +1,6 @@
 var doc = document.documentElement,
     resize = document.getElementById('resize'),
-    img = null,
+    img = document.querySelector('img'),
     lastWidth = null,
     down = null;
 
@@ -33,19 +33,26 @@ doc.ondrop = function (e) {
     img.onload = function () {
       document.body.appendChild(img);
       if (lastWidth !== null) {
-        var width = img.width;
-        img.width = lastWidth;
-        img.height = lastWidth / width * img.height;
+        // var width = img.width;
+        // img.width = lastWidth;
+        // img.height = lastWidth / width * img.height;
+        resizeImg(img.width);
       }
       positionResize();
 
-      /**
-       * TODO
-       * - send image to server via XHR
-       * - return ID and set on url
-       * - 
-       */
+    
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/new', true);
+      xhr.onload = function(e) {
+        var data = JSON.parse(this.responseText);
+        window.history.replaceState({ width: img.width }, null, '/' + data.id + '/#' + img.width);
+        document.title = 'FlickBin ' + img.width + 'x' + img.height;
+      };
 
+      var formData = new FormData();
+      formData.append("image", file);
+
+      xhr.send(formData);  // multipart/form-data
     };
     img.src = event.target.result;
   };
@@ -55,14 +62,31 @@ doc.ondrop = function (e) {
 };
 
 function positionResize() {
-  resize.style.left = (img.width - 10) + 'px';
-  resize.style.top = (img.height - 10) + 'px';
+  if (img) {
+    resize.style.left = (img.width - 10) + 'px';
+    resize.style.top = (img.height - 10) + 'px';
+  }
 }
 
 function resizeImg(width) {
-  var oldWidth = img.width;
-  img.width = width;
-  img.height = width / oldWidth * img.height;
+  if (img) {
+    var oldWidth = img.width;
+    // console.log(width, img.width, img.height, width / oldWidth * img.height);
+    var height = width / oldWidth * img.height | 0;    
+    img.height = height;
+    img.width = width;
+    console.log(width, img.width, width == img.width, img.height, height, height == img.height);
+  }
+}
+
+function sendSize(width) {
+  var xhr = new XMLHttpRequest();
+  var path = window.location.pathname.replace(/\/$/, '');
+  xhr.open('POST', path + '/resize', true);
+  var formData = new FormData();
+  formData.append('file', img.src.replace(/.*\//, ''));
+  formData.append('width', width);
+  xhr.send(formData);
 }
 
 doc.onmousedown = function (e) {
@@ -77,8 +101,10 @@ doc.onmouseup = function () {
   if (down) {
     if (lastWidth !== down.width) {
       window.history.pushState({ width: down.width }, null, '#' + down.width);
+      document.title = 'FlickBin ' + img.width + 'x' + img.height;
       lastWidth = down.width;
       localStorage.lastWidth = lastWidth;
+      sendSize(lastWidth);
     }
     down = false;
     doc.className = '';
@@ -97,8 +123,9 @@ doc.onmousemove = function (e) {
 }
 
 window.onpopstate = function (event) {
-  if (img) {
+  if (img && event.state) {
     if (event.state.width) {
+      console.log('resize')
       resizeImg(event.state.width);
       positionResize();
       lastWidth = event.state.width;
@@ -112,8 +139,10 @@ window.onpopstate = function (event) {
   }
 };
 
-
-
+window.onload = function () {
+  resizeImg(lastWidth);
+  positionResize();
+}
 
 
 
