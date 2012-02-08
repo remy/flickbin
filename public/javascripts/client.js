@@ -84,6 +84,7 @@ function sendSize(width) {
   var path = window.location.pathname.replace(/\/$/, '');
   xhr.open('POST', path + '/resize', true);
   var data = 'file=' + encodeURIComponent(img.src.replace(/.*\//, '')) + '&width=' + width;
+  xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
   xhr.send(data);
 }
 
