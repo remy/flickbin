@@ -83,10 +83,8 @@ function sendSize(width) {
   var xhr = new XMLHttpRequest();
   var path = window.location.pathname.replace(/\/$/, '');
   xhr.open('POST', path + '/resize', true);
-  var formData = new FormData();
-  formData.append('file', img.src.replace(/.*\//, ''));
-  formData.append('width', width);
-  xhr.send(formData);
+  var data = 'file=' + encodeURIComponent(img.src.replace(/.*\//, '')) + '&width=' + width;
+  xhr.send(data);
 }
 
 doc.onmousedown = function (e) {

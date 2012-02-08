@@ -54,7 +54,7 @@ app.get('/:id', function (req, res) {
 });
 
 app.post('/:id/resize', function (req, res) {
-  var dif = __dirname + '/public/uploads/' + req.params.id;
+  var dir = __dirname + '/public/uploads/' + req.params.id;
   fs.readFile(dir + '/' + req.body.file, function (err, data) {
     if (err) return res.send({ error: err + '' });
 
