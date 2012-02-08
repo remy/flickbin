@@ -1,0 +1,42 @@
+* { 
+  -moz-box-sizing: border-box; 
+  -webkit-box-sizing: border-box; 
+  -ms-box-sizing: border-box; 
+  -o-box-sizing: border-box; 
+  box-sizing: border-box; 
+}
+
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#resize {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  cursor: move;
+  background: #ccc;
+}
+
+.resizing #resize {
+  background: none;
+}
