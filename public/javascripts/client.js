@@ -77,7 +77,7 @@ function resizeImg(width) {
     var height = width / oldWidth * img.height | 0;    
     img.height = height;
     img.width = width;
-    console.log(width, img.width, width == img.width, img.height, height, height == img.height);
+    // console.log(width, img.width, width == img.width, img.height, height, height == img.height);
   }
 }
 
@@ -89,7 +89,6 @@ function sendSize(width) {
   var file = img.dataset.name || img.src.replace(/.*\//, '');
   var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-  xhr.send(data);
   xhr.onreadstatechange = function () {
     if (this.readyState == 4) {
       if (this.status == 200) {
@@ -98,6 +97,14 @@ function sendSize(width) {
       }
     }
   };
+  xhr.send(data);
+  // var ctx = document.createElement('canvas').getContext('2d');
+  // ctx.canvas.width = img.width;
+  // ctx.canvas.height = img.height;
+  // console.log(img.width, img.height);
+  // ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, img.width, img.height);
+  // img.src = ctx.canvas.toDataURL('image/jpeg');
+  // console.log(ctx.canvas);
 }
 
 doc.onmousedown = function (e) {
@@ -136,7 +143,6 @@ doc.onmousemove = function (e) {
 window.onpopstate = function (event) {
   if (img && event.state) {
     if (event.state.width) {
-      console.log('resize')
       resizeImg(event.state.width);
       positionResize();
       lastWidth = event.state.width;
