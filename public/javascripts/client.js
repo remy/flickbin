@@ -49,6 +49,8 @@ doc.ondrop = function (e) {
         document.title = 'FlickBin ' + img.width + 'x' + img.height;
       };
 
+      img.dataset.name = file.name;
+
       var formData = new FormData();
       formData.append("image", file);
 
@@ -83,7 +85,10 @@ function sendSize(width) {
   var xhr = new XMLHttpRequest();
   var path = window.location.pathname.replace(/\/$/, '');
   xhr.open('POST', path + '/resize', true);
-  var data = 'file=' + encodeURIComponent(img.src.replace(/.*\//, '')) + '&width=' + width;
+
+  var file = img.dataset.name || img.src.replace(/.*\//, '');
+  console.log(file);
+  var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
   xhr.send(data);
 }

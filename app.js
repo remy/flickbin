@@ -9,6 +9,8 @@ var express = require('express')
     mime = require('mime'),
     fs = require('fs'),
     im = require('imagemagick');
+    // Canvas = require('Canvas'),
+    // Image = Canvas.Image;
 
 try { fs.mkdirSync(__dirname + '/public/uploads'); } catch (e) {}
 
@@ -45,7 +47,14 @@ app.get('/:id', function (req, res) {
     if (exists) {
       fs.readdir(dir, function (err, files) {
         if (err) return res.send({ error: err + '' });
-        res.render('index', { img: req.params.id + '/' + files[0] });
+        var file = '';
+        for (var i = 0; i < files.length; i++) {
+          if (mime.lookup(files[i]).indexOf('image/') == 0) {
+            file = files[i];
+            break;
+          }
+        }
+        res.render('index', { img: req.params.id + '/' + file });
       });      
     } else {
       res.render('index');
@@ -56,6 +65,7 @@ app.get('/:id', function (req, res) {
 app.post('/:id/resize', function (req, res) {
   var dir = __dirname + '/public/uploads/' + req.params.id;
   fs.readFile(dir + '/' + req.body.file, function (err, data) {
+    console.log(dir + '/' + req.body.file)
     if (err) return res.send({ error: err + '' });
 
     im.resize({
@@ -67,6 +77,32 @@ app.post('/:id/resize', function (req, res) {
       console.log('resized to ' + req.body.width);
       res.send({ done: true });
     });
+
+
+    // var img = new Image;
+    // img.onload = function () {
+    //   console.log('image loaded...%d x %d');
+    //   var canvas = new Canvas(req.body.width, req.body.height),
+    //       ctx = canvas.getContext('2d');
+
+    //   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, req.body.width, req.body.height);
+
+    //   var out = fs.createWriteStream(dir + '/resized/' + req.body.width + '.jpg'),
+    //       stream = canvas.createJPEGStream();
+
+    //   stream.on('data', function(chunk){
+    //     out.write(chunk);
+    //   });
+
+    //   stream.on('end', function(){
+    //     res.send({ done: true });
+    //   });
+        
+    // };
+    // img.onerror = function (e) {
+    //   console.log('err', e);
+    // };
+    // img.src = data;
   });
 });
 
