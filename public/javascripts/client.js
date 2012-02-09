@@ -86,6 +86,7 @@ function sendSize(width) {
   var path = window.location.pathname.replace(/\/$/, '');
   
   var file = img.dataset.name || img.src.replace(/.*\//, '');
+  img.dataset.name = file; // in case it's replaced later
   var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
   xhr.open('POST', path + '/resize', true);
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
