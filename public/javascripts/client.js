@@ -87,10 +87,17 @@ function sendSize(width) {
   xhr.open('POST', path + '/resize', true);
 
   var file = img.dataset.name || img.src.replace(/.*\//, '');
-  console.log(file);
   var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
   xhr.send(data);
+  xhr.onreadstatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        img.src = JSON.parse(this.responseText).url;
+        console.log('loaded');
+      }
+    }
+  };
 }
 
 doc.onmousedown = function (e) {

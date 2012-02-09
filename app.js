@@ -73,9 +73,9 @@ app.post('/:id/resize', function (req, res) {
       width: req.body.width
     }, function(err, stdout, stderr){
       if (err) throw err
-      fs.writeFile(dir + '/resized/' + req.body.width, stdout, 'binary');
+      fs.writeFile(dir + '/resized/' + req.body.width + '.jpg', stdout, 'binary');
       console.log('resized to ' + req.body.width);
-      res.send({ done: true });
+      res.send({ url: '/uploads/' + req.params.id + '/resized/' + req.body.width + '.jpg' });
     });
 
 
