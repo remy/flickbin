@@ -87,6 +87,7 @@ function sendSize(width) {
   
   var file = img.dataset.name || img.src.replace(/.*\//, '');
   var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
+  xhr.open('POST', path + '/resize', true);
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
   xhr.onreadystatechange = function () {
     if (this.readyState == 4) {
@@ -96,7 +97,6 @@ function sendSize(width) {
       }
     }
   };
-  xhr.open('POST', path + '/resize', true);
   xhr.send(data);
   // var ctx = document.createElement('canvas').getContext('2d');
   // ctx.canvas.width = img.width;
