@@ -84,12 +84,11 @@ function resizeImg(width) {
 function sendSize(width) {
   var xhr = new XMLHttpRequest();
   var path = window.location.pathname.replace(/\/$/, '');
-  xhr.open('POST', path + '/resize', true);
-
+  
   var file = img.dataset.name || img.src.replace(/.*\//, '');
   var data = 'file=' + encodeURIComponent(file) + '&width=' + img.width + '&height=' + img.height;
   xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-  xhr.onreadstatechange = function () {
+  xhr.onreadystatechange = function () {
     if (this.readyState == 4) {
       if (this.status == 200) {
         img.src = JSON.parse(this.responseText).url;
@@ -97,6 +96,7 @@ function sendSize(width) {
       }
     }
   };
+  xhr.open('POST', path + '/resize', true);
   xhr.send(data);
   // var ctx = document.createElement('canvas').getContext('2d');
   // ctx.canvas.width = img.width;
